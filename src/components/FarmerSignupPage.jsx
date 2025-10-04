@@ -1,40 +1,8 @@
-// import React from 'react';
-// import AdminSignup from './AdminSignup';
-// import { useNavigate } from 'react-router-dom';
-
-// function AdminSignupPage() {
-//   const navigate = useNavigate();
-
-//   return (
-//     <div className="min-h-screen relative flex items-center justify-center">
-//       <div 
-//         className="absolute inset-0 bg-cover bg-center"
-//         style={{ backgroundImage: "url('https://images.pexels.com/photos/1595104/pexels-photo-1595104.jpeg?auto=compress&cs=tinysrgb&w=1600')" }}
-//       ></div>
-//       <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/30"></div>
-//       <div className="relative max-w-md p-6 bg-white rounded-xl shadow-lg border-2 border-yellow-200 m-4">
-//         <AdminSignup />
-//         <p className="mt-4 text-sm text-gray-600 text-center">
-//           Already have an account?{" "}
-//           <button
-//             onClick={() => navigate('/admin-login')}
-//             className="text-blue-500 hover:text-blue-700 underline"
-//           >
-//             Login
-//           </button>
-//         </p>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default AdminSignupPage;
-
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
-function AdminSignupPage() {
+function FarmerSignupPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -74,7 +42,7 @@ function AdminSignupPage() {
       email,
       password,
       options: {
-        data: { firstName, lastName, username, role: 'admin' }
+        data: { firstName, lastName, username, role: 'farmer' }
       }
     });
 
@@ -95,16 +63,16 @@ function AdminSignupPage() {
 
       {/* Signup Form */}
       <div className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6 border-2 border-blue-300">
+        <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6 border-2 border-green-300">
           <h2 className="text-xl font-semibold text-center mb-6">Register for Membership</h2>
           <p className="text-sm text-gray-600 text-center mb-6">If you are an existing member of AgriSetu, please log in to continue.</p>
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-gray-700 mb-1">* First & Last Name</label>
+                <label className="block text-gray-700 mb-1">* First Name</label>
                 <input
                   type="text"
-                  className="w-full p-2 border rounded focus:border-blue-500"
+                  className="w-full p-2 border rounded focus:border-green-500"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder="First Name"
@@ -113,9 +81,10 @@ function AdminSignupPage() {
                 {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>}
               </div>
               <div>
+                <label className="block text-gray-700 mb-1">Last Name</label>
                 <input
                   type="text"
-                  className="w-full p-2 border rounded focus:border-blue-500"
+                  className="w-full p-2 border rounded focus:border-green-500"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder="Last Name"
@@ -128,7 +97,7 @@ function AdminSignupPage() {
               <label className="block text-gray-700 mb-1">* Your E-Mail Address</label>
               <input
                 type="email"
-                className="w-full p-2 border rounded focus:border-blue-500"
+                className="w-full p-2 border rounded focus:border-green-500"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Your E-Mail Address"
@@ -141,7 +110,7 @@ function AdminSignupPage() {
               <label className="block text-gray-700 mb-1">* Choose a Username</label>
               <input
                 type="text"
-                className="w-full p-2 border rounded focus:border-blue-500"
+                className="w-full p-2 border rounded focus:border-green-500"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Username (6+ characters)"
@@ -154,7 +123,7 @@ function AdminSignupPage() {
               <label className="block text-gray-700 mb-1">* Choose a Password</label>
               <input
                 type="password"
-                className="w-full p-2 border rounded focus:border-blue-500"
+                className="w-full p-2 border rounded focus:border-green-500"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password (6+ characters)"
@@ -167,7 +136,7 @@ function AdminSignupPage() {
               <label className="block text-gray-700 mb-1">* Confirm Your Password</label>
               <input
                 type="password"
-                className="w-full p-2 border rounded focus:border-blue-500"
+                className="w-full p-2 border rounded focus:border-green-500"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm Password"
@@ -185,7 +154,7 @@ function AdminSignupPage() {
             </button>
           </form>
           <p className="text-center text-sm text-gray-600 mt-4">
-            Already have an account? <button onClick={() => navigate('/admin-login')} className="text-blue-500 hover:text-blue-700 underline">Login</button>
+            Already have an account? <button onClick={() => navigate('/farmer-login')} className="text-blue-500 hover:text-blue-700 underline">Login</button>
           </p>
         </div>
       </div>
@@ -193,4 +162,4 @@ function AdminSignupPage() {
   );
 }
 
-export default AdminSignupPage;
+export default FarmerSignupPage;
