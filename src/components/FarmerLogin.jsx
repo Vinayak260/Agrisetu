@@ -1,49 +1,4 @@
-// // //FarmerLogin.jsx
-//  import { useState } from "react";
-//  import { supabase } from "../lib/supabaseClient";
 
-//  export default function FarmerLogin() {
-//   const [phone, setPhone] = useState("");
-//   const [message, setMessage] = useState("");
-
-//   const handleLogin = async (e) => {
-//      e.preventDefault();
-//      const { error } = await supabase.auth.signInWithOtp({ phone });
-//      if (error) setMessage(error.message);
-//      else setMessage("OTP sent! Check your phone.");
-//     };
-
-//    return (
-//     <div className="border border-yellow-300 bg-white p-6 rounded-xl shadow-lg">
-//        <h2 className="text-xl font-bold text-center text-gray-800 mb-6">
-//          Farmer Login
-//        </h2>
-
-//       <form onSubmit={handleLogin} className="space-y-5">
-//        <div>
-//            <label className="block text-gray-700 mb-1">Phone Number</label>
-//            <input
-//              type="tel"
-//              className="w-full p-2 border rounded"
-//              value={phone}
-//              onChange={(e) => setPhone(e.target.value)}
-//              placeholder="+91 9876543210"
-//              required
-//            />
-//          </div>
-
-//          {message && <p className="text-blue-500 text-sm">{message}</p>}
-
-//          <button
-//            type="submit"
-//            className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
-//          >
-//            Send OTP
-//         </button>
-//        </form>
-//       </div>
-//    );
-// }
 
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
@@ -53,54 +8,84 @@ function FarmerLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const { error } = await supabase.auth.signInWithPassword({ 
-      email: username, // Use username as email for login
-      password 
-    });
-    if (error) {
-      setError(error.message);
-    } else {
-      navigate('/dashboard'); // Redirect to dashboard or farmer-specific page
+    setLoading(true);
+    setError('');
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ 
+        email: username, // Assuming username is the email
+        password 
+      });
+
+      if (error) {
+        setError(error.message);
+      } else {
+        // ✅ SUCCESS: Redirect specifically to the Farmer Dashboard
+        navigate('/farmer-dashboard');
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <form onSubmit={handleLogin} className="space-y-4">
+      {/* Username/Email Input */}
       <div>
-        <label className="block text-gray-700 mb-1">Username/Email</label>
+        <label className="block text-gray-700 font-medium mb-1 text-sm">Username/Email</label>
         <input
-          type="text"
-          className="w-full p-2 border rounded"
+          type="email"
+          className="w-full p-2.5 border rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="Enter username or email"
+          placeholder="Enter your email"
           required
         />
       </div>
+
+      {/* Password Input */}
       <div>
-        <label className="block text-gray-700 mb-1">Password</label>
+        <label className="block text-gray-700 font-medium mb-1 text-sm">Password</label>
         <input
           type="password"
-          className="w-full p-2 border rounded"
+          className="w-full p-2.5 border rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Enter your password"
+          placeholder="••••••••"
           required
         />
       </div>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-600 px-3 py-2 rounded-md text-xs animate-pulse">
+          {error}
+        </div>
+      )}
+
+      {/* Submit Button */}
       <button
         type="submit"
-        className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
+        disabled={loading}
+        className={`w-full bg-green-600 text-white py-2.5 rounded-lg font-bold hover:bg-green-700 transition-colors shadow-md ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
-        Login
+        {loading ? 'Logging in...' : 'Login to Dashboard'}
       </button>
+
+      {/* Forgot Password Link */}
       <p className="text-center text-sm text-gray-600">
-        <button onClick={() => navigate('/farmer-forgot-password')} className="text-blue-500 hover:text-blue-700 underline">
+        <button 
+          type="button"
+          onClick={() => navigate('/farmer-forgot-password')} 
+          className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+        >
           Forgot password?
         </button>
       </p>
