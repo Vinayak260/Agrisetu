@@ -1,8 +1,10 @@
+
+
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
-function ForgotPasswordPage() {
+function FarmerForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -14,7 +16,7 @@ function ForgotPasswordPage() {
     setMessage('');
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'http://localhost:5173/update-password', // Adjust for your app URL
+      redirectTo: 'http://localhost:5173/farmer-update-password',
     });
 
     setLoading(false);
@@ -34,16 +36,17 @@ function ForgotPasswordPage() {
         <p className="text-sm">Bridges the gap between Farmers and technology</p>
       </header>
 
-      {/* Forgot Password Form */}
+      {/* Forgot Password Form - Centered Container */}
       <div className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+        <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6 border-2 border-green-300">
           <h2 className="text-xl font-semibold text-center mb-6">Forgot Password</h2>
           <form onSubmit={handleReset} className="space-y-4">
             <div>
               <label className="block text-gray-700 mb-1">Email</label>
               <input
                 type="email"
-                className="w-full p-2 border rounded"
+                // 🛠️ FIX: Added focus:ring classes for visual consistency
+                className="w-full p-2 border rounded focus:border-green-500 focus:ring-2 focus:ring-green-200"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
@@ -54,13 +57,13 @@ function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+              className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 disabled:opacity-50"
             >
               {loading ? 'Sending...' : 'Send Reset Link'}
             </button>
           </form>
           <p className="text-center text-sm text-gray-600 mt-4">
-            <button onClick={() => navigate('/admin-login')} className="text-blue-500 hover:text-blue-700 underline">
+            <button onClick={() => navigate('/farmer-login')} className="text-green-500 hover:text-green-700 underline">
               Back to Login
             </button>
           </p>
@@ -70,4 +73,4 @@ function ForgotPasswordPage() {
   );
 }
 
-export default ForgotPasswordPage;
+export default FarmerForgotPasswordPage;
