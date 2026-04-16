@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../supabaseClient'; 
+import { supabase } from '../lib/supabaseClient';
 import { ArrowLeft } from 'lucide-react';
 
 // Feature Components
@@ -13,8 +13,9 @@ import SowingCalendar from '../features/weather/SowingCalendar';
 
 const FarmerDashboard = () => {
   const [activeTab, setActiveTab] = useState('hub');
-  const [language, setLanguage] = useState('mr'); 
+  const [language, setLanguage] = useState('mr');
   const [weatherData, setWeatherData] = useState(null);
+  const [isFetchingWeather, setIsFetchingWeather] = useState(false);
   const navigate = useNavigate();
 
   // --- LOGOUT LOGIC ---
@@ -23,24 +24,36 @@ const FarmerDashboard = () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      
+
       // Navigate to landing page (root) where "Get Started" is located
-      navigate('/'); 
+      navigate('/');
     } catch (err) {
       console.error("Logout Error:", err.message);
     }
   };
 
-  // Fetching weather data on mount
-  useEffect(() => {
+  const fetchWeatherByGeoloc = () => {
+    setIsFetchingWeather(true);
     navigator.geolocation.getCurrentPosition((pos) => {
       const { latitude, longitude } = pos.coords;
       const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
       fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${API_KEY}`)
         .then(res => res.json())
-        .then(data => setWeatherData(data))
-        .catch(err => console.error("Weather Fetch Error:", err));
-    });
+        .then(data => {
+          setWeatherData(data);
+          setIsFetchingWeather(false);
+        })
+        .catch(err => {
+          console.error("Weather Fetch Error:", err);
+          setIsFetchingWeather(false);
+        });
+    }, () => setIsFetchingWeather(false));
+  };
+
+
+  // Fetching weather data on mount
+  useEffect(() => {
+    fetchWeatherByGeoloc();
   }, []);
 
   const translations = {
@@ -53,15 +66,15 @@ const FarmerDashboard = () => {
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] pb-10">
-      
+
       {/* Navbar with Functional Logout */}
       <nav className="px-8 py-6 flex justify-between items-center max-w-7xl mx-auto sticky top-0 bg-[#FDFDFD]/80 backdrop-blur-md z-40 border-b border-slate-50">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-[#1B4332] rounded-xl flex items-center justify-center shadow-lg text-white font-black">A</div>
           <span className="text-2xl font-black tracking-tighter text-[#1B4332]">{t.welcome}</span>
         </div>
-        <button 
-          onClick={handleLogout} 
+        <button
+          onClick={handleLogout}
           className="bg-red-50 text-red-600 px-6 py-2 rounded-full font-bold text-sm hover:bg-red-100 transition-colors"
         >
           {t.logout}
@@ -73,10 +86,10 @@ const FarmerDashboard = () => {
           /* --- MAIN HUB VIEW --- */
           <div className="space-y-12 animate-in fade-in duration-500">
             <div className="py-10 text-center">
-                <h1 className="text-4xl font-black text-slate-800 tracking-tight mb-2">नमस्कार, शेतकरी मित्र! 👋</h1>
-                <p className="text-slate-500 font-medium tracking-wide">तुमच्या प्रगतीचा सोबती - एग्रीसेतू</p>
+              <h1 className="text-4xl font-black text-slate-800 tracking-tight mb-2">नमस्कार, शेतकरी मित्र! 👋</h1>
+              <p className="text-slate-500 font-medium tracking-wide">तुमच्या प्रगतीचा सोबती - एग्रीसेतू</p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-2">
               <FeatureCard icon="🏥" title="Krushi Doctor" desc="पीक रोग तपासणी" color="bg-emerald-500" onClick={() => setActiveTab('doctor')} />
               <FeatureCard icon="🤖" title="AI Assistant" desc="व्हॉइस असिस्टंट" color="bg-indigo-600" onClick={() => setActiveTab('ai')} />
@@ -86,7 +99,7 @@ const FarmerDashboard = () => {
         ) : (
           /* --- FEATURE CONTENT VIEW --- */
           <div className="animate-in slide-in-from-bottom-4 duration-500">
-            <button 
+            <button
               onClick={() => setActiveTab('hub')}
               className="flex items-center gap-2 mb-6 text-[#1B4332] font-black hover:translate-x-[-4px] transition-transform px-2"
             >
@@ -97,27 +110,29 @@ const FarmerDashboard = () => {
             </button>
 
             <div className="overflow-hidden bg-white rounded-[3.5rem] shadow-2xl shadow-gray-200/40 border border-gray-50 min-h-[600px] mb-10">
-              
+
               {/* Weather Stats Tab */}
               {activeTab === 'stats' && (
                 <div className="animate-in fade-in duration-700">
-                  <WeatherHero 
-                    currentLang={language} 
-                    setLang={setLanguage} 
-                    data={weatherData} 
+                  <WeatherHero
+                    currentLang={language}
+                    setLang={setLanguage}
+                    data={weatherData}
+                    onUseCurrentLocation={fetchWeatherByGeoloc}
+                    onRefresh={fetchWeatherByGeoloc}
                   />
-                  
+
                   <div className="p-6 md:p-12 space-y-8">
                     <section>
-                        <SowingCalendar weatherData={weatherData} />
+                      <SowingCalendar weatherData={weatherData} />
                     </section>
 
                     <section>
-                        <h3 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2 px-2">
-                           <span className="w-1.5 h-6 bg-blue-500 rounded-full"></span>
-                           {t.weatherTitle}
-                        </h3>
-                        <StatsGrid data={weatherData} language={language} />
+                      <h3 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2 px-2">
+                        <span className="w-1.5 h-6 bg-blue-500 rounded-full"></span>
+                        {t.weatherTitle}
+                      </h3>
+                      <StatsGrid data={weatherData} language={language} />
                     </section>
                   </div>
                 </div>
@@ -126,14 +141,14 @@ const FarmerDashboard = () => {
               {/* AI Assistant Tab */}
               {activeTab === 'ai' && (
                 <div className="p-8 md:p-12">
-                   <AIAssistant language={language} setLanguage={setLanguage} />
+                  <AIAssistant language={language} setLanguage={setLanguage} />
                 </div>
               )}
 
               {/* Krushi Doctor Tab */}
               {activeTab === 'doctor' && (
                 <div className="p-8 md:p-12">
-                   <KrushiDoctor language={language} />
+                  <KrushiDoctor language={language} />
                 </div>
               )}
             </div>
@@ -145,8 +160,8 @@ const FarmerDashboard = () => {
 };
 
 const FeatureCard = ({ icon, title, desc, color, onClick }) => (
-  <button 
-    onClick={onClick} 
+  <button
+    onClick={onClick}
     className="group bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all text-left w-full"
   >
     <div className={`${color} w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-6 text-white shadow-lg group-hover:rotate-6 transition-transform`}>

@@ -452,7 +452,7 @@ export default App;
 
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { supabase } from './supabaseClient'; 
+import { supabase } from './lib/supabaseClient';
 
 // --- AUTH COMPONENTS ---
 import LandingPage from './components/LandingPage';
@@ -514,13 +514,13 @@ function App() {
         <Route path="/farmer-signup" element={<FarmerSignupPage />} />
         <Route path="/farmer-forgot-password" element={<FarmerForgotPasswordPage />} />
         <Route path="/farmer-update-password" element={<FarmerUpdatePasswordPage />} />
-        
+
         {/* --- PROTECTED FARMER ROUTES --- */}
         {/* WeatherPage Route has been removed from here */}
         <Route path="/farmer-dashboard" element={session ? <FarmerDashboard /> : <Navigate to="/farmer-login" />} />
         <Route path="/ai-assistant" element={session ? <AIAssistant /> : <Navigate to="/farmer-login" />} />
         <Route path="/krushi-doctor" element={session ? <KrushiDoctor /> : <Navigate to="/farmer-login" />} />
-         <Route path="/farmer/history" element={<ReportHistory />} />
+        <Route path="/farmer/history" element={<ReportHistory />} />
 
         {/* --- Admin Auth Routes --- */}
         <Route path="/admin-login" element={<AdminLoginPage />} />
@@ -530,7 +530,7 @@ function App() {
 
         {/* --- Admin Dashboard (Nested Routing) --- */}
         <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<Dashboard />} /> 
+          <Route index element={<Dashboard />} />
           <Route path="pending" element={<PendingUsers />} />
           <Route path="all-users" element={<AllUsers />} />
           <Route path="profiles" element={<UserProfiles />} />

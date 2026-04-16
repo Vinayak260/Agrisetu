@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import VoiceButton from './VoiceButton'; 
-import { supabase } from '../../supabaseClient'; 
+import { supabase } from '../../lib/supabaseClient'; 
 import { Sparkles, MessageSquare, Keyboard, Mic, SendHorizontal } from 'lucide-react';
 
 const AIAssistant = () => {
@@ -117,7 +117,7 @@ export default AIAssistant;
 
 import React, { useState, useEffect, useRef } from 'react';
 import VoiceButton from './VoiceButton'; 
-import { supabase } from '../../supabaseClient'; 
+import { supabase } from '../../lib/supabaseClient'; 
 import { Sparkles, MessageSquare, Keyboard, Mic, SendHorizontal, Lightbulb, Zap } from 'lucide-react';
 
 const AIAssistant = () => {
@@ -276,17 +276,17 @@ export default AIAssistant;
 
 
 import React, { useState, useEffect, useRef } from 'react';
-import VoiceButton from './VoiceButton'; 
-import { supabase } from '../../supabaseClient'; 
+import VoiceButton from './VoiceButton';
+import { supabase } from '../../lib/supabaseClient';
 import { Sparkles, MessageSquare, Keyboard, Mic, SendHorizontal, Lightbulb, Zap } from 'lucide-react';
 
 const AIAssistant = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [language, setLanguage] = useState('mr-IN'); 
-  const [currentAiReply, setCurrentAiReply] = useState(""); 
+  const [language, setLanguage] = useState('mr-IN');
+  const [currentAiReply, setCurrentAiReply] = useState("");
   const [inputValue, setInputValue] = useState("");
-  const [isVoiceMode, setIsVoiceMode] = useState(false); 
+  const [isVoiceMode, setIsVoiceMode] = useState(false);
   const chatEndRef = useRef(null);
 
   // Suggestions for the grid
@@ -306,8 +306,8 @@ const AIAssistant = () => {
 
     setMessages(prev => [...prev, { role: 'user', content: textToSearch }]);
     setLoading(true);
-    setInputValue(""); 
-    setCurrentAiReply(""); 
+    setInputValue("");
+    setCurrentAiReply("");
 
     try {
       const { data, error } = await supabase.functions.invoke('ai-chat', {
@@ -315,7 +315,7 @@ const AIAssistant = () => {
       });
       if (error) throw error;
       setMessages(prev => [...prev, { role: 'assistant', content: data.reply }]);
-      setCurrentAiReply(data.reply); 
+      setCurrentAiReply(data.reply);
     } catch (err) {
       console.error(err);
       setMessages(prev => [...prev, { role: 'assistant', content: "Error. Try again." }]);
@@ -326,7 +326,7 @@ const AIAssistant = () => {
 
   return (
     <div className="flex flex-col h-[90vh] max-w-4xl mx-auto bg-white rounded-[3rem] shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in duration-700">
-      
+
       {/* 1. Header Area */}
       <div className="flex justify-between items-center p-6 bg-white border-b border-slate-50">
         <div className="flex items-center gap-3">
@@ -341,12 +341,11 @@ const AIAssistant = () => {
 
         <div className="flex bg-slate-100 p-1 rounded-full border border-slate-200 shadow-inner">
           {[{ id: 'mr-IN', label: 'MR' }, { id: 'hi-IN', label: 'HI' }, { id: 'en-IN', label: 'EN' }].map((l) => (
-            <button 
+            <button
               key={l.id}
               onClick={() => { setLanguage(l.id); setMessages([]); }}
-              className={`px-4 py-1.5 rounded-full text-[10px] font-black transition-all ${
-                language === l.id ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400'
-              }`}
+              className={`px-4 py-1.5 rounded-full text-[10px] font-black transition-all ${language === l.id ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400'
+                }`}
             >
               {l.label}
             </button>
@@ -358,7 +357,7 @@ const AIAssistant = () => {
       <div className="flex-1 overflow-y-auto p-6 bg-slate-50/30 custom-scrollbar">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center animate-in zoom-in duration-700">
-            
+
             {/* --- Greeting Bubble --- */}
             <div className="flex flex-col items-start w-full max-w-2xl mb-8 animate-in slide-in-from-left-6">
               <div className="flex items-start gap-3">
@@ -367,11 +366,11 @@ const AIAssistant = () => {
                 </div>
                 <div className="bg-white px-6 py-4 rounded-[1.8rem] rounded-tl-none shadow-sm border border-slate-100">
                   <p className="text-sm font-bold text-slate-700 leading-relaxed italic">
-                    {language === 'mr-IN' 
-                      ? "नमस्कार! मी अ‍ॅग्रीसेतू AI आहे. मी तुम्हाला शेतीविषयक प्रश्नांमध्ये मदत करू शकतो. काय जाणून घ्यायचे आहे?" 
+                    {language === 'mr-IN'
+                      ? "नमस्कार! मी अ‍ॅग्रीसेतू AI आहे. मी तुम्हाला शेतीविषयक प्रश्नांमध्ये मदत करू शकतो. काय जाणून घ्यायचे आहे?"
                       : language === 'hi-IN'
-                      ? "नमस्ते! मैं एग्रीसेतु AI हूँ। मैं आपकी खेती से जुड़े सवालों में मदद कर सकता हूँ। क्या जानना चाहेंगे?"
-                      : "Hello! I am AgriSetu AI. I can help you with all your farming questions. What would you like to know?"
+                        ? "नमस्ते! मैं एग्रीसेतु AI हूँ। मैं आपकी खेती से जुड़े सवालों में मदद कर सकता हूँ। क्या जानना चाहेंगे?"
+                        : "Hello! I am AgriSetu AI. I can help you with all your farming questions. What would you like to know?"
                     }
                   </p>
                 </div>
@@ -402,9 +401,8 @@ const AIAssistant = () => {
         ) : (
           messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} mb-6`}>
-              <div className={`max-w-[85%] px-5 py-3 rounded-[1.8rem] text-sm font-medium shadow-sm leading-relaxed ${
-                msg.role === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white text-slate-700 border border-slate-100 rounded-tl-none'
-              }`}>
+              <div className={`max-w-[85%] px-5 py-3 rounded-[1.8rem] text-sm font-medium shadow-sm leading-relaxed ${msg.role === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white text-slate-700 border border-slate-100 rounded-tl-none'
+                }`}>
                 {msg.content}
               </div>
             </div>
@@ -419,7 +417,7 @@ const AIAssistant = () => {
         <div className="relative w-full min-h-16 flex items-center justify-center">
           {!isVoiceMode ? (
             <div className="w-full flex items-center gap-3 bg-slate-50 border border-slate-200 p-2 rounded-full shadow-inner">
-              <input 
+              <input
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
@@ -441,8 +439,8 @@ const AIAssistant = () => {
           )}
         </div>
         <div className="mt-4 flex justify-center gap-6 opacity-40">
-           <span className="text-[9px] font-black uppercase tracking-widest">AI Responses</span>
-           <span className="text-[9px] font-black uppercase tracking-widest">Weather Sync</span>
+          <span className="text-[9px] font-black uppercase tracking-widest">AI Responses</span>
+          <span className="text-[9px] font-black uppercase tracking-widest">Weather Sync</span>
         </div>
       </footer>
     </div>
