@@ -1,59 +1,57 @@
-/**
- * AgriWeatherLogic: Converts raw weather data into farming advisories.
- * Thresholds are based on Indian agricultural standards (ICAR/IMD).
- */
-/*
-export const getAgriAdvice = (weatherData) => {
-  const { temp, humidity } = weatherData.main;
-  const windSpeed = weatherData.wind.speed * 3.6; // Convert m/s to km/h
-  const rain = weatherData.rain ? weatherData.rain['1h'] || 0 : 0;
-  const weatherDesc = weatherData.weather[0].main.toLowerCase();
+import Groq from "groq-sdk";
 
-  const advisories = {
-    spraying: { status: "success", text: "फवारणीसाठी अनुकूल वेळ (Good for spraying)." },
-    irrigation: { status: "neutral", text: "गरजेनुसार पाणी द्या (Irrigate as needed)." },
-    sowing: { status: "neutral", text: "जमिनीत वाफसा आल्यावर पेरणी करा (Sow once soil is ready)." }
-  };
+export const getAIFarmingAdvice = async (weatherData, lang = 'mr') => {
+  if (!weatherData) return [];
 
-  // --- 1. Spraying Logic (Crucial for Pesticides/Insecticides) ---
-  if (windSpeed > 15) {
-    advisories.spraying = { 
-      status: "danger", 
-      text: "वारा जोरात आहे, फवारणी टाळा (High wind, avoid spraying to prevent drift)." 
-    };
-  } else if (rain > 0.5 || weatherDesc.includes("rain")) {
-    advisories.spraying = { 
-      status: "danger", 
-      text: "पाऊस सुरू आहे, फवारणी करू नका (Rain will wash away the chemicals)." 
-    };
-  } else if (temp > 30) {
-    advisories.spraying = { 
-      status: "warning", 
-      text: "तापमान जास्त आहे, सकाळी किंवा संध्याकाळी फवारणी करा (High temp, spray in early morning/evening)." 
-    };
+  // Initialize Groq (dangerouslyAllowBrowser is needed if calling directly from React)
+  const groq = new Groq({
+    apiKey: import.meta.env.VITE_GROQ_API_KEY,
+    dangerouslyAllowBrowser: true
+  });
+
+  const { temp, humidity, pressure } = weatherData.main || {};
+  const windSpeed = (weatherData.wind?.speed * 3.6) || 0;
+  const weatherDesc = weatherData.weather?.[0]?.description || "Normal";
+
+  const prompt = `
+    You are an expert Indian agricultural advisor.
+    Current Weather Data: Temperature: ${temp}°C, Humidity: ${humidity}%, Wind: ${windSpeed}km/h, Conditions: ${weatherDesc}, Pressure: ${pressure}hPa.
+    
+    Based on this weather, generate EXACTLY TWO short and highly practical farming recommendations (e.g. for spraying, sowing, or irrigation).
+    
+    The response MUST be a pure JavaScript array of JSON objects with exactly these keys:
+    - "type": either "success" (if conditions are good) or "warning" (if conditions are bad/risky).
+    - "title": A very short heading for the task (e.g., "Perfect for Spraying" or "Delay Irrigation").
+    - "subtitle": The detailed reason/action (max 1 sentence).
+    - "priority": either "high" or "low".
+
+    IMPORTANT: Write the "title" and "subtitle" in the language code: ${lang} (e.g., if mr, write in Marathi. if hi, in Hindi. if en, in English).
+    DO NOT output Markdown fences. Output ONLY the raw JSON array.
+  `;
+
+  try {
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [{ role: "user", content: prompt }],
+      model: "llama-3.1-8b-instant", // Fast model for real-time UI
+      temperature: 0.2, // Low temp for more deterministic array output
+    });
+
+    const aiResponse = chatCompletion.choices[0]?.message?.content || "";
+
+    // Attempt to parse the pure JSON array securely
+    const parsedData = JSON.parse(aiResponse.trim());
+    return parsedData;
+
+  } catch (error) {
+    console.error("Groq AI Error:", error);
+    // Fallback if AI fails or no API key is provided
+    return [
+      {
+        type: temp < 35 ? "success" : "warning",
+        title: lang === 'mr' ? "सामान्य स्थिती" : "General Setup",
+        subtitle: lang === 'mr' ? "हवामान माहिती उपलब्ध आहे." : "Weather data is normal.",
+        priority: "low"
+      }
+    ];
   }
-
-  // --- 2. Irrigation Logic (Water Management) ---
-  if (temp > 35 && humidity < 40) {
-    advisories.irrigation = { 
-      status: "warning", 
-      text: "बाष्पीभवन जास्त आहे, हलके पाणी द्या (High evaporation, provide light irrigation)." 
-    };
-  } else if (rain > 5) {
-    advisories.irrigation = { 
-      status: "success", 
-      text: "पाऊस पुरेसा आहे, पाण्याची गरज नाही (Sufficient rain, stop irrigation)." 
-    };
-  }
-
-  // --- 3. Sowing/General Logic ---
-  if (rain > 50) {
-    advisories.sowing = { 
-      status: "warning", 
-      text: "अति पाऊस, शेतातून पाण्याचा निचरा करा (Excessive rain, ensure proper drainage)." 
-    };
-  }
-
-  return advisories;
 };
-*/
