@@ -154,8 +154,17 @@ const AIAssistant = () => {
         body: { prompt: textToSearch, lang: language },
       });
       if (error) throw error;
-      setMessages(prev => [...prev, { role: 'assistant', content: data.reply }]);
-      setCurrentAiReply(data.reply); 
+      
+      let replyText = data.reply;
+      
+      // Convert English numerals to Devanagari if language is Marathi or Hindi
+      if (language === 'mr-IN' || language === 'hi-IN') {
+        const devanagariDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+        replyText = replyText.replace(/[0-9]/g, match => devanagariDigits[parseInt(match)]);
+      }
+
+      setMessages(prev => [...prev, { role: 'assistant', content: replyText }]);
+      setCurrentAiReply(replyText); 
     } catch (err) {
       console.error(err);
       setMessages(prev => [...prev, { role: 'assistant', content: "Error. Try again." }]);
@@ -457,11 +466,11 @@ export default AIAssistant;
 */
 
 
-
-import React, { useState, useEffect, useRef } from 'react';
-import VoiceButton from './VoiceButton'; 
-import { supabase } from '../../supabaseClient'; 
-import { Sparkles, MessageSquare, Keyboard, Mic, SendHorizontal, Lightbulb, Zap, Plus, History, Trash2, Menu } from 'lucide-react';
+import React, { useState, useEffect, useRef } from "react";
+import VoiceButton from "./VoiceButton";
+// FIX: Correct path to the lib folder
+import { supabase } from "../../lib/supabaseClient"; 
+import { Sparkles, MessageSquare, Keyboard, Mic, SendHorizontal, Zap, Plus, History, Trash2, Menu } from 'lucide-react';
 
 /**
  * STRIP HTML FOR VOICE
@@ -508,7 +517,7 @@ const AIAssistant = () => {
   const [language, setLanguage] = useState('mr-IN'); 
   const [inputValue, setInputValue] = useState("");
   const [isVoiceMode, setIsVoiceMode] = useState(false); 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Control Sidebar Toggle
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const chatEndRef = useRef(null);
   
   const [historyList, setHistoryList] = useState([]);
@@ -525,9 +534,14 @@ const AIAssistant = () => {
   }, []);
 
   const fetchHistoryFromDB = async () => {
+    // Only fetch chats for the logged-in farmer
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
     const { data, error } = await supabase
       .from('chat_sessions')
       .select('*')
+      .eq('user_id', user.id) // Ensure private chat history
       .order('created_at', { ascending: false });
 
     if (!error && data) setHistoryList(data);
@@ -570,13 +584,21 @@ const AIAssistant = () => {
   };
 
   const saveChatToDB = async (updatedMessages, responseTranslations) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
     const multiLangTitle = {
       'en-IN': stripHtmlForVoice(responseTranslations['en-IN']).substring(0, 25) + "...",
       'hi-IN': stripHtmlForVoice(responseTranslations['hi-IN']).substring(0, 25) + "...",
       'mr-IN': stripHtmlForVoice(responseTranslations['mr-IN']).substring(0, 25) + "..."
     };
 
-    const chatPayload = { titles: multiLangTitle, messages: updatedMessages };
+    const chatPayload = { 
+      titles: multiLangTitle, 
+      messages: updatedMessages,
+      user_id: user.id // Link the chat to the specific user
+    };
+    
     if (currentChatId) chatPayload.id = currentChatId;
 
     const { data, error } = await supabase.from('chat_sessions').upsert(chatPayload).select();
@@ -588,6 +610,7 @@ const AIAssistant = () => {
 
   const startNewChat = () => { setMessages([]); setCurrentChatId(null); };
   const loadPastChat = (chat) => { setMessages(chat.messages); setCurrentChatId(chat.id); };
+  
   const deleteChat = async (e, id) => {
     e.stopPropagation();
     const { error } = await supabase.from('chat_sessions').delete().eq('id', id);
@@ -604,45 +627,28 @@ const AIAssistant = () => {
   };
 
   return (
-    <div className="flex h-[90vh] max-h-[90vh] max-w-6xl mx-auto bg-white rounded-[3rem] shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in duration-700">
+    <div className="flex h-[600px] w-full max-w-6xl mx-auto bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden animate-in fade-in duration-700">
       
       {/* --- SIDEBAR --- */}
       <div className={`${isSidebarOpen ? 'w-64' : 'w-20'} h-full bg-slate-50 border-r border-slate-100 flex flex-col transition-all duration-300 ease-in-out shrink-0 overflow-hidden`}>
-        
-        {/* Toggle Button & New Chat */}
         <div className="p-6 shrink-0 flex flex-col gap-6">
-          <button 
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 hover:bg-slate-200 rounded-xl w-fit transition-colors text-slate-600"
-          >
+          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 hover:bg-slate-200 rounded-xl w-fit transition-colors text-slate-600">
             <Menu size={20} />
           </button>
-
-          <button 
-            onClick={startNewChat} 
-            className={`flex items-center justify-center gap-2 bg-indigo-600 text-white py-3 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-100 ${isSidebarOpen ? 'px-4 text-xs' : 'px-0 w-10 h-10 mx-auto'}`}
-          >
+          <button onClick={startNewChat} className={`flex items-center justify-center gap-2 bg-indigo-600 text-white py-3 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-100 ${isSidebarOpen ? 'px-4 text-xs' : 'px-0 w-10 h-10 mx-auto'}`}>
             <Plus size={16} />
             {isSidebarOpen && "New Chat"}
           </button>
         </div>
         
-        {/* History List */}
         <div className="flex-1 overflow-y-auto px-4 pb-6 space-y-2 custom-scrollbar">
           {isSidebarOpen && (
             <div className="flex items-center gap-2 px-2 py-2 text-[10px] font-black text-slate-400 uppercase tracking-widest sticky top-0 bg-slate-50 z-10">
               <History size={12} /> Recent Chats
             </div>
           )}
-          
           {historyList.map((chat) => (
-            <div 
-              key={chat.id} 
-              onClick={() => loadPastChat(chat)} 
-              className={`group flex items-center p-3 rounded-xl cursor-pointer transition-all border ${
-                currentChatId === chat.id ? 'bg-white border-indigo-100 shadow-sm' : 'border-transparent hover:bg-slate-100'
-              } ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}
-            >
+            <div key={chat.id} onClick={() => loadPastChat(chat)} className={`group flex items-center p-3 rounded-xl cursor-pointer transition-all border ${currentChatId === chat.id ? 'bg-white border-indigo-100 shadow-sm' : 'border-transparent hover:bg-slate-100'} ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
               <div className="flex items-center gap-3 overflow-hidden">
                 <MessageSquare size={14} className={currentChatId === chat.id ? 'text-indigo-600' : 'text-slate-400'} />
                 {isSidebarOpen && (
@@ -667,22 +673,18 @@ const AIAssistant = () => {
           .ai-response ul { list-style-type: disc !important; padding-left: 1.5rem !important; margin: 10px 0 !important; }
           .ai-response li { margin-bottom: 8px !important; line-height: 1.6 !important; display: list-item !important; }
           .ai-response p { margin-bottom: 8px !important; }
-          .ai-response a { color: #4f46e5 !important; text-decoration: underline !important; font-weight: bold !important; }
           .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-          .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
           .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
         `}</style>
 
-        {/* Header */}
         <div className="flex justify-between items-center p-6 bg-white border-b border-slate-50 shrink-0">
           <div className="flex items-center gap-3">
             <div className="bg-indigo-600 p-2.5 rounded-2xl shadow-lg shadow-indigo-100"><Sparkles size={18} className="text-white" /></div>
             <div>
               <h2 className="text-lg font-black text-slate-800 leading-none">AgriSetu AI</h2>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Digital Assistant</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Assistant</span>
             </div>
           </div>
-
           <div className="flex bg-slate-100 p-1 rounded-full border border-slate-200">
             {[{ id: 'mr-IN', label: 'MR' }, { id: 'hi-IN', label: 'HI' }, { id: 'en-IN', label: 'EN' }].map((l) => (
               <button key={l.id} onClick={() => setLanguage(l.id)} className={`px-4 py-1.5 rounded-full text-[10px] font-black transition-all ${language === l.id ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400'}`}>{l.label}</button>
@@ -690,20 +692,25 @@ const AIAssistant = () => {
           </div>
         </div>
 
-        {/* Chat Area */}
-        <div className="flex-1 overflow-y-auto p-6 bg-slate-50/30 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-6 bg-slate-50/30 custom-scrollbar flex flex-col">
           {messages.length === 0 ? (
-            <div className="min-h-full flex flex-col items-center justify-center">
-              <div className="flex flex-col items-start w-full max-w-2xl mb-8">
-                <div className="flex items-start gap-3">
-                  <div className="bg-emerald-500 p-2 rounded-xl shadow-lg mt-2"><MessageSquare size={18} className="text-white" /></div>
-                  <div className="bg-white px-6 py-4 rounded-[1.8rem] rounded-tl-none shadow-sm border border-slate-100 font-bold text-slate-700 italic text-sm">
-                    {language === 'mr-IN' ? "नमस्कार! मी अ‍ॅग्रीसेतू AI आहे..." : language === 'hi-IN' ? "नमस्ते! मैं एग्रीसेतु AI हूँ..." : "Hello! I am AgriSetu AI..."}
-                  </div>
+            <div className="flex-1 flex flex-col items-center justify-end pb-2 gap-6">
+              <div className="w-full max-w-2xl flex items-start gap-3 animate-in slide-in-from-left-4 duration-500">
+                <div className="bg-emerald-500 p-2.5 rounded-xl shadow-lg mt-1 shrink-0">
+                  <MessageSquare size={18} className="text-white" />
+                </div>
+                <div className="bg-white px-6 py-4 rounded-[1.5rem] rounded-tl-none shadow-sm border border-slate-100">
+                  <p className="text-sm font-medium text-slate-700 leading-relaxed">
+                    {language === 'mr-IN'
+                      ? "नमस्कार! मी अ‍ॅग्रीसेतू AI आहे. मी तुम्हाला शेतीविषयक प्रश्नांमध्ये मदत करू शकतो. तुम्हाला काय जाणून घ्यायचे आहे?"
+                      : language === 'hi-IN'
+                        ? "नमस्ते! मैं एग्रीसेतु AI हूँ। मैं आपकी खेती से जुड़े सवालों में मदद कर सकता हूँ। आप क्या जानना चाहेंगे?"
+                        : "Hello! I am AgriSetu AI. I can help you with all your farming questions. What would you like to know?"
+                    }
+                  </p>
                 </div>
               </div>
-
-              <div className="w-full max-w-2xl bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-xl">
+              <div className="w-full max-w-2xl bg-white border border-slate-100 rounded-[1.5rem] p-4 shadow-sm">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {quickQuestions[language]?.map((q, i) => (
                     <button key={i} onClick={() => handleAgriQuery(q)} className="group flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl hover:bg-indigo-600 hover:text-white transition-all text-left text-xs font-bold text-slate-600">
@@ -726,17 +733,16 @@ const AIAssistant = () => {
           <div ref={chatEndRef} />
         </div>
 
-        {/* Footer */}
-        <footer className="p-8 bg-white border-t border-slate-50 shrink-0">
-          <div className="relative w-full flex items-center justify-center min-h-16">
+        <footer className="p-4 bg-white border-t border-slate-50 shrink-0">
+          <div className="relative w-full flex items-center justify-center min-h-[4rem]">
             {!isVoiceMode ? (
-              <div className="w-full flex items-center gap-3 bg-slate-50 border border-slate-200 p-2 rounded-full shadow-inner">
-                <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAgriQuery()} placeholder="विचारा..." className="flex-1 bg-transparent px-6 py-2 text-sm font-medium outline-none" />
-                <button onClick={() => setIsVoiceMode(true)} className="p-3 text-slate-400 hover:text-indigo-600"><Mic size={20} /></button>
-                <button onClick={() => handleAgriQuery()} className="bg-indigo-600 text-white p-4 rounded-full shadow-lg"><SendHorizontal size={20} /></button>
+              <div className="w-full flex items-center gap-3 bg-slate-50 border-2 border-slate-200 p-2 rounded-full shadow-inner hover:border-indigo-300 hover:bg-white focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/20 focus-within:bg-white transition-all duration-300">
+                <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAgriQuery()} placeholder="विचारा..." className="flex-1 bg-transparent px-6 py-2 text-sm font-medium outline-none text-slate-700 placeholder:text-slate-400" />
+                <button onClick={() => setIsVoiceMode(true)} className="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors"><Mic size={20} /></button>
+                <button onClick={() => handleAgriQuery()} className="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-full shadow-lg hover:shadow-indigo-500/30 active:scale-95 transition-all"><SendHorizontal size={20} /></button>
               </div>
             ) : (
-              <div className="w-full flex items-center justify-between bg-emerald-50 border border-emerald-100 p-2 rounded-full">
+              <div className="w-full flex items-center justify-between bg-emerald-50 border-2 border-emerald-100 p-2 rounded-full hover:border-emerald-300 hover:shadow-md hover:shadow-emerald-500/10 transition-all duration-300">
                 <button onClick={() => setIsVoiceMode(false)} className="ml-4 p-2 rounded-xl bg-white text-emerald-600"><Keyboard size={18} /></button>
                 <div className="flex-1 flex justify-center scale-90">
                   <VoiceButton selectedLang={language} onTranscript={handleAgriQuery} aiResponseText={stripHtmlForVoice(getDisplayContent(messages[messages.length - 1] || {}))} />

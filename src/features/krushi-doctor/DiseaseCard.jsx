@@ -86,7 +86,7 @@ const DiseaseCard = ({ data, labels }) => {
   };
 
   return (
-    <div className="p-8 rounded-[3rem] bg-white shadow-2xl border border-slate-100 space-y-8 animate-in slide-in-from-bottom-6 duration-700">
+    <div className="p-8 rounded-[3rem] bg-gradient-to-br from-blue-50/40 via-white to-emerald-50/30 shadow-2xl border border-slate-100 space-y-8 animate-in slide-in-from-bottom-6 duration-700">
       {/* Header Section */}
       <div className="flex items-center gap-4 pb-6 border-b border-slate-50">
         <div className="bg-rose-500 p-4 rounded-2xl shadow-lg">

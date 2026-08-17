@@ -1,0 +1,80 @@
+description: "Agrisetu Frontend AI Evaluation - Krushi Doctor"
+
+# We use the exact technical stack for judging hallucinations so you don't need OpenAI keys
+defaultTest:
+  options:
+    # Use Llama 3.3 70B via Groq as the grader for factuality and hallucination checks
+    provider: groq:llama-3.3-70b-versatile
+
+# Your exact technical stack provider for the tests
+providers:
+  # Using the 3.1 upgraded version of the Groq model
+  - groq:llama-3.1-8b-instant
+  # Or you can test Gemini via Google API if needed
+  # - google:gemini-1.5-pro-latest
+
+# The exact prompt used in your KrushiDoctor component
+prompts:
+  - |
+    Act as a Senior Plant Pathologist.
+    Analyze the {{selectedCrop}} crop based on these symptoms: {{symptomsDescription}}
+    
+    Return JSON where the values are in {{language}}, but DO NOT translate the JSON keys. The disease "name" MUST remain in English. The keys MUST remain exactly as written below in English:
+    {
+      "name": "Disease Name",
+      "detectedCrop": "Visually Identified Crop",
+      "cause": "Cause",
+      "transmission": "Spreading method",
+      "symptoms": ["S1", "S2"],
+      "immediate_care": ["A1", "A2"],
+      "preventative_care": ["P1", "P2"],
+      "healthy": 80,
+      "infected": 20,
+      "confidence": 90
+    }
+
+# Tests for Accuracy, Precision, Recall, F1, and Hallucinations
+tests:
+  - description: "Test Accuracy and F1 Score for Cotton Powdery Mildew"
+    vars:
+      language: "English"
+      selectedCrop: "Cotton"
+      symptomsDescription: "White powdery spots on leaves, curled edges, and stunted growth."
+      
+      # Ground truth vars for our custom scripts
+      eval_accuracy_field: "name"
+      expected_value: "Powdery Mildew"
+      
+      eval_target_field: "symptoms"
+      expected_items: "white powdery spots, curled edges, stunted growth"
+    assert:
+      # 1. Custom Script: Tracks Exact Match Accuracy
+      - type: javascript
+        value: file://metrics.js:evaluateAccuracy
+      
+      # 2. Custom Script: Tracks Precision, Recall, and F1 score
+      - type: javascript
+        value: file://metrics.js:evaluateInformationRetrieval
+      
+      # 3. Built-in: Hallucination Tracking (checks if AI invented non-factual treatments or causes)
+      - type: factuality
+        value: "The response must accurately describe Powdery Mildew and must not hallucinate unscientific preventative cares."
+
+  - description: "Test Factuality & Hallucinations for Hindi Output (Sugarcane Red Rot)"
+    vars:
+      language: "Hindi"
+      selectedCrop: "Sugarcane"
+      symptomsDescription: "Red discoloration of the internal tissues, sour smell, drying of leaves."
+      
+      eval_accuracy_field: "name"
+      expected_value: "Red Rot"
+      
+      eval_target_field: "immediate_care"
+      expected_items: "हटाना, दवाएं"
+    assert:
+      - type: javascript
+        value: file://metrics.js:evaluateInformationRetrieval
+      
+      # Built-in factuality metric to verify it doesn't hallucinate context
+      - type: factuality
+        value: "The response must accurately describe Sugarcane Red Rot without hallucinating unrelated facts."

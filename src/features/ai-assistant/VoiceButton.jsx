@@ -11,7 +11,7 @@ import { Mic, MicOff, Volume2, Square } from 'lucide-react';
  */
 const splitByScript = (text) => {
   const chunks = [];
-  const regex = /([\u0900-\u097F\s।,!?;:]+|[^\u0900-\u097F]+)/g;
+  const regex = /([\u0900-\u097F\s।,!?;:%\-()'"/\\]+|[^\u0900-\u097F]+)/g;
   let match;
   while ((match = regex.exec(text)) !== null) {
     const chunk = match[0].trim();
@@ -54,13 +54,25 @@ const VoiceButton = ({ selectedLang, onTranscript, aiResponseText }) => {
   // 2. Voice Selection Logic
   const getNativeVoice = useCallback(() => {
     const prefix = selectedLang.split('-')[0];
-    const exactMatch = availableVoices.find(v => v.lang === selectedLang && v.name.includes('Google'));
+    
+    // Prioritize high-quality/natural voices
+    const naturalMatch = availableVoices.find(v => v.lang.startsWith(prefix) && (v.name.toLowerCase().includes('natural') || v.name.toLowerCase().includes('online')));
+    if (naturalMatch) return naturalMatch;
+
+    // Fallback to Google voice
+    const googleMatch = availableVoices.find(v => v.lang.startsWith(prefix) && v.name.includes('Google'));
+    if (googleMatch) return googleMatch;
+
+    // Fallback to exact lang match
+    const exactMatch = availableVoices.find(v => v.lang === selectedLang);
     if (exactMatch) return exactMatch;
 
+    // Fallback to prefix match
     const prefixMatch = availableVoices.find(v => v.lang.startsWith(prefix));
     if (prefixMatch) return prefixMatch;
 
-    if (prefix === 'mr') { // Fallback Marathi to Hindi Voice
+    // Last resort: Marathi falls back to Hindi if no Marathi voice exists
+    if (prefix === 'mr') { 
       return availableVoices.find(v => v.lang.startsWith('hi'));
     }
     return null;
@@ -82,10 +94,9 @@ const VoiceButton = ({ selectedLang, onTranscript, aiResponseText }) => {
     if (!aiResponseText) return;
 
     // CLEANING: Remove dots and special characters
-    const cleanText = aiResponseText
+    let cleanText = aiResponseText
       .replace(/\./g, ' ')        // Replaces dots with a pause
-      .replace(/[*#]/g, '')       // Removes bold/headers
-      .replace(/-/g, 'next, ');   // Natural list transitions
+      .replace(/[*#]/g, '');      // Removes bold/headers
 
     const chunks = splitByScript(cleanText);
     const nativeVoice = getNativeVoice();
@@ -102,7 +113,7 @@ const VoiceButton = ({ selectedLang, onTranscript, aiResponseText }) => {
         if (englishVoice) utterance.voice = englishVoice;
       }
 
-      utterance.rate = 0.88;
+      utterance.rate = 0.95; // Increased from 0.88 to sound more fluent and natural
       if (index === 0) utterance.onstart = () => setIsSpeaking(true);
       if (index === chunks.length - 1) utterance.onend = () => setIsSpeaking(false);
       utterance.onerror = () => setIsSpeaking(false);

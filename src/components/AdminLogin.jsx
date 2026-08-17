@@ -337,14 +337,23 @@ function AdminLogin() {
   };
 
   return (
-    <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md mx-auto">
-      <h2 className="text-2xl font-bold text-center mb-6">Login to your Account</h2>
+    <div
+      className="bg-white p-8 rounded-2xl w-full max-w-md mx-auto
+        border-2 border-gray-200
+        shadow-lg
+        transition-all duration-300 ease-in-out
+        hover:border-blue-400 hover:shadow-2xl hover:shadow-blue-100 hover:-translate-y-1"
+    >
+      <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Login to your Account</h2>
       <form onSubmit={handleLogin} className="space-y-4">
         <div>
-          <label className="block text-gray-700 mb-1">Username/Email</label>
+          <label className="block text-gray-600 font-medium mb-1 text-sm">Username/Email</label>
           <input
             type="email"
-            className="w-full p-2 border rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+            className="w-full p-3 border border-gray-200 rounded-lg
+              focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+              hover:border-gray-400
+              outline-none transition-all duration-200 bg-gray-50"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="vinayak155@gmail.com"
@@ -352,10 +361,13 @@ function AdminLogin() {
           />
         </div>
         <div>
-          <label className="block text-gray-700 mb-1">Password</label>
+          <label className="block text-gray-600 font-medium mb-1 text-sm">Password</label>
           <input
             type="password"
-            className="w-full p-2 border rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+            className="w-full p-3 border border-gray-200 rounded-lg
+              focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+              hover:border-gray-400
+              outline-none transition-all duration-200 bg-gray-50"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
@@ -364,30 +376,40 @@ function AdminLogin() {
         </div>
 
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-2 text-red-600 text-sm">
+          <div className="bg-red-50 border-l-4 border-red-500 p-3 text-red-600 text-sm rounded-r-lg">
             {error}
           </div>
         )}
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white font-bold py-2.5 rounded-lg hover:bg-blue-700 active:scale-95 transition-all shadow-lg shadow-blue-100"
+          className="w-full bg-blue-600 text-white font-bold py-3 rounded-xl
+            shadow-md shadow-blue-200
+            hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-300 hover:-translate-y-0.5
+            active:scale-95 active:shadow-sm
+            transition-all duration-200"
         >
           Login
         </button>
 
-        <p className="text-center text-sm text-gray-600 pt-2">
-          <button 
+        <p className="text-center text-sm text-gray-600 pt-1">
+          <button
             type="button"
-            onClick={() => navigate('/admin-forgot-password')} 
-            className="text-blue-500 hover:text-blue-700 underline"
+            onClick={() => navigate('/admin-forgot-password')}
+            className="text-blue-500 hover:text-blue-700 underline underline-offset-2 transition-colors"
           >
             Forgot password?
           </button>
         </p>
 
-        <p className="text-center text-sm text-gray-500">
-          Not registered yet? <span className="text-blue-500 cursor-pointer" onClick={() => navigate('/signup')}>sign up here</span>
+        <p className="text-center text-sm text-gray-500 border-t border-gray-100 pt-4 mt-2">
+          Not registered yet?{' '}
+          <span
+            className="text-blue-500 cursor-pointer hover:text-blue-700 underline underline-offset-2 transition-colors font-medium"
+            onClick={() => navigate('/admin-signup')}
+          >
+            sign up here
+          </span>
         </p>
       </form>
     </div>
@@ -395,5 +417,3 @@ function AdminLogin() {
 }
 
 export default AdminLogin;
-
-     

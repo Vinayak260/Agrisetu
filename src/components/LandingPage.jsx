@@ -206,6 +206,38 @@ function LandingPage() {
             </div>
           </div>
         </section>
+
+        {/* CTA Banner Section */}
+        <section className="py-12 bg-gray-50/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="relative bg-gradient-to-r from-green-600 to-blue-600 rounded-[2.5rem] p-12 text-center overflow-hidden shadow-xl">
+              {/* Decorative circles */}
+              <div className="absolute top-8 left-8 w-16 h-16 rounded-full border border-white/20 hidden md:block"></div>
+              <div className="absolute bottom-8 left-8 w-16 h-16 rounded-full border border-white/20 hidden md:block"></div>
+              <div className="absolute top-12 right-12 w-20 h-20 rounded-full border border-white/20 hidden md:block"></div>
+              <div className="absolute bottom-12 right-12 w-24 h-24 rounded-full border border-white/20 hidden md:block"></div>
+
+              <div className="relative z-10">
+                <h2 className="text-3xl md:text-4xl font-black text-white mb-4 flex items-center justify-center gap-3">
+                  <span className="text-yellow-400 text-2xl md:text-3xl">⚡</span> 
+                  Ready to Transform Your Farming? 
+                  <span className="text-yellow-400 text-2xl md:text-3xl">⚡</span>
+                </h2>
+                <p className="text-white/90 font-medium text-lg mb-8 max-w-2xl mx-auto">
+                  Join thousands of farmers already using DigiShivar AI to increase productivity and profits
+                </p>
+                <button 
+                  onClick={() => setShowLogin(true)}
+                  className="inline-flex items-center gap-2 bg-white text-green-700 font-bold px-8 py-4 rounded-xl hover:bg-green-50 transition-all hover:-translate-y-1 shadow-lg"
+                >
+                  <Sparkles size={20} className="text-green-600" />
+                  Start Your Journey
+                  <ArrowRight size={20} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
 
       {/* NEW DARK FOOTER */}

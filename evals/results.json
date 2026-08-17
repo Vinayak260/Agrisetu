@@ -1,0 +1,516 @@
+{
+  "evalId": "eval-0vY-2026-05-21T09:23:53",
+  "results": {
+    "version": 3,
+    "timestamp": "2026-05-21T09:23:53.164Z",
+    "prompts": [
+      {
+        "id": "dbcd92c91d71d6269a285d8ba9abce9545f8594cabcfd5322ca0d427a2ea9d35",
+        "raw": "Act as a Senior Plant Pathologist.\nAnalyze the {{selectedCrop}} crop based on these symptoms: {{symptomsDescription}}\n\nReturn JSON where the values are in {{language}}, but DO NOT translate the JSON keys. The keys MUST remain exactly as written below in English:\n{\n  \"name\": \"Disease Name\",\n  \"detectedCrop\": \"Visually Identified Crop\",\n  \"cause\": \"Cause\",\n  \"transmission\": \"Spreading method\",\n  \"symptoms\": [\"S1\", \"S2\"],\n  \"immediate_care\": [\"A1\", \"A2\"],\n  \"preventative_care\": [\"P1\", \"P2\"],\n  \"healthy\": 80,\n  \"infected\": 20,\n  \"confidence\": 90\n}\n",
+        "label": "Act as a Senior Plant Pathologist.\nAnalyze the {{selectedCrop}} crop based on these symptoms: {{symptomsDescription}}\n\nReturn JSON where the values are in {{language}}, but DO NOT translate the JSON keys. The keys MUST remain exactly as written below in English:\n{\n  \"name\": \"Disease Name\",\n  \"detectedCrop\": \"Visually Identified Crop\",\n  \"cause\": \"Cause\",\n  \"transmission\": \"Spreading method\",\n  \"symptoms\": [\"S1\", \"S2\"],\n  \"immediate_care\": [\"A1\", \"A2\"],\n  \"preventative_care\": [\"P1\", \"P2\"],\n  \"healthy\": 80,\n  \"infected\": 20,\n  \"confidence\": 90\n}\n",
+        "provider": "groq:llama-3.1-8b-instant",
+        "metrics": {
+          "score": 1.4333333333333331,
+          "testPassCount": 1,
+          "testFailCount": 1,
+          "testErrorCount": 0,
+          "assertPassCount": 4,
+          "assertFailCount": 1,
+          "totalLatencyMs": 2973,
+          "tokenUsage": {
+            "prompt": 406,
+            "completion": 607,
+            "cached": 0,
+            "total": 1013,
+            "numRequests": 2,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0
+            },
+            "assertions": {
+              "total": 1811,
+              "prompt": 1573,
+              "completion": 238,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0
+              }
+            }
+          },
+          "namedScores": {},
+          "namedScoresCount": {},
+          "cost": 0
+        }
+      }
+    ],
+    "results": [
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 0.9333333333333332,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 842,
+            "prompt": 744,
+            "completion": 98,
+            "cached": 0,
+            "numRequests": 1
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Accurate Match: Powdery Mildew"
+            },
+            {
+              "pass": true,
+              "score": 0.8,
+              "reason": "Precision: 100.0%, Recall: 66.7%, F1: 80.0%"
+            },
+            {
+              "assertion": {
+                "type": "factuality",
+                "value": "The response must accurately describe Powdery Mildew and must not hallucinate unscientific preventative cares."
+              },
+              "pass": true,
+              "score": 1,
+              "reason": "The submitted answer contains all the same details as the expert answer, specifically identifying the disease as Powdery Mildew, which is consistent with the symptoms provided. The submitted answer also provides a comprehensive analysis, including the cause, transmission, symptoms, immediate care, and preventative care, all of which are accurate and consistent with the expert's expectation of describing Powdery Mildew without hallucinating unscientific preventative cares.",
+              "tokensUsed": {
+                "total": 842,
+                "prompt": 744,
+                "completion": 98,
+                "numRequests": 1
+              }
+            }
+          ]
+        },
+        "id": "b492d994-39cc-4204-a258-03e7c6672b8b",
+        "latencyMs": 1364,
+        "namedScores": {},
+        "prompt": {
+          "raw": "Act as a Senior Plant Pathologist.\nAnalyze the Cotton crop based on these symptoms: White powdery spots on leaves, curled edges, and stunted growth.\n\nReturn JSON where the values are in English, but DO NOT translate the JSON keys. The keys MUST remain exactly as written below in English:\n{\n  \"name\": \"Disease Name\",\n  \"detectedCrop\": \"Visually Identified Crop\",\n  \"cause\": \"Cause\",\n  \"transmission\": \"Spreading method\",\n  \"symptoms\": [\"S1\", \"S2\"],\n  \"immediate_care\": [\"A1\", \"A2\"],\n  \"preventative_care\": [\"P1\", \"P2\"],\n  \"healthy\": 80,\n  \"infected\": 20,\n  \"confidence\": 90\n}\n",
+          "label": "Act as a Senior Plant Pathologist.\nAnalyze the {{selectedCrop}} crop based on these symptoms: {{symptomsDescription}}\n\nReturn JSON where the values are in {{language}}, but DO NOT translate the JSON keys. The keys MUST remain exactly as written below in English:\n{\n  \"name\": \"Disease Name\",\n  \"detectedCrop\": \"Visually Identified Crop\",\n  \"cause\": \"Cause\",\n  \"transmission\": \"Spreading method\",\n  \"symptoms\": [\"S1\", \"S2\"],\n  \"immediate_care\": [\"A1\", \"A2\"],\n  \"preventative_care\": [\"P1\", \"P2\"],\n  \"healthy\": 80,\n  \"infected\": 20,\n  \"confidence\": 90\n}\n",
+          "config": {
+            "provider": "groq:llama-3.3-70b-versatile"
+          }
+        },
+        "promptId": "dbcd92c91d71d6269a285d8ba9abce9545f8594cabcfd5322ca0d427a2ea9d35",
+        "promptIdx": 0,
+        "provider": {
+          "id": "groq:llama-3.1-8b-instant",
+          "label": ""
+        },
+        "response": {
+          "output": "Based on the symptoms you provided, I would analyze the Cotton crop as follows:\n\nThe Cotton crop exhibits white powdery spots on leaves, curled edges, and stunted growth. These symptoms are characteristic of a fungal disease known as Powdery Mildew.\n\nHere's the JSON analysis:\n\n```json\n{\n  \"name\": \"Powdery Mildew\",\n  \"detectedCrop\": \"Cotton\",\n  \"cause\": \"Fungal infection caused by Oidium neolycopersici\",\n  \"transmission\": \"Airborne spores, water splash, and contaminated seeds\",\n  \"symptoms\": [\n    \"White powdery spots on leaves\",\n    \"Curled edges\"\n  ],\n  \"immediate_care\": [\n    \"Remove infected leaves to prevent further spread\",\n    \"Apply fungicides to control the disease\"\n  ],\n  \"preventative_care\": [\n    \"Use resistant cultivars\",\n    \"Maintain good air circulation and sanitation\"\n  ],\n  \"healthy\": 80,\n  \"infected\": 20,\n  \"confidence\": 90\n}\n```\n\nNote: The confidence level of 90% indicates that the diagnosis is highly likely, but not definitive. Further testing and analysis may be necessary to confirm the diagnosis.",
+          "tokenUsage": {
+            "total": 462,
+            "prompt": 202,
+            "completion": 260,
+            "numRequests": 1
+          },
+          "cached": false,
+          "latencyMs": 1364,
+          "finishReason": "stop",
+          "guardrails": {
+            "flagged": false
+          },
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "alt-svc": "h3=\":443\"; ma=86400",
+                "cache-control": "private, max-age=0, no-store, no-cache, must-revalidate",
+                "cf-cache-status": "DYNAMIC",
+                "cf-ray": "9ff2865d2c864037-BOM",
+                "connection": "keep-alive",
+                "content-encoding": "br",
+                "content-type": "application/json",
+                "date": "Thu, 21 May 2026 09:23:53 GMT",
+                "server": "cloudflare",
+                "set-cookie": "__cf_bm=FuYh4ezWcOTWnIonwfJfkMOZCM0AbCWlK39VIi6JIFw-1779355432.5101697-1.0.1.1-R86sdVkUNoMriMAw9cMibioku62nd0NeHG.ukTefB9b2UZg.shxhBUmm5ybYs0u6pk6uW0z0dL0S8jNzKKeLfnnbCbLLC.yBwa65JmcR7_z_rjgf7CtIrAyXsG1W70IM; HttpOnly; SameSite=None; Secure; Path=/; Domain=groq.com; Expires=Thu, 21 May 2026 09:53:53 GMT",
+                "strict-transport-security": "max-age=15552000",
+                "transfer-encoding": "chunked",
+                "vary": "Origin",
+                "via": "1.1 google",
+                "x-groq-region": "bom",
+                "x-ratelimit-limit-requests": "14400",
+                "x-ratelimit-limit-tokens": "6000",
+                "x-ratelimit-remaining-requests": "14399",
+                "x-ratelimit-remaining-tokens": "4774",
+                "x-ratelimit-reset-requests": "6s",
+                "x-ratelimit-reset-tokens": "12.26s",
+                "x-request-id": "req_01ks4xjdk8f6pv2pqp696a2h57"
+              }
+            }
+          }
+        },
+        "score": 0.9333333333333332,
+        "success": true,
+        "testCase": {
+          "description": "Test Accuracy and F1 Score for Cotton Powdery Mildew",
+          "vars": {
+            "language": "English",
+            "selectedCrop": "Cotton",
+            "symptomsDescription": "White powdery spots on leaves, curled edges, and stunted growth.",
+            "eval_accuracy_field": "name",
+            "expected_value": "Powdery Mildew",
+            "eval_target_field": "symptoms",
+            "expected_items": "white powdery spots, curled edges, stunted growth"
+          },
+          "assert": [
+            {
+              "type": "javascript",
+              "value": "file://metrics.js:evaluateAccuracy"
+            },
+            {
+              "type": "javascript",
+              "value": "file://metrics.js:evaluateInformationRetrieval"
+            },
+            {
+              "type": "factuality",
+              "value": "The response must accurately describe Powdery Mildew and must not hallucinate unscientific preventative cares."
+            }
+          ],
+          "options": {
+            "provider": "groq:llama-3.3-70b-versatile"
+          },
+          "metadata": {}
+        },
+        "testIdx": 0,
+        "vars": {
+          "language": "English",
+          "selectedCrop": "Cotton",
+          "symptomsDescription": "White powdery spots on leaves, curled edges, and stunted growth.",
+          "eval_accuracy_field": "name",
+          "expected_value": "Powdery Mildew",
+          "eval_target_field": "symptoms",
+          "expected_items": "white powdery spots, curled edges, stunted growth"
+        },
+        "metadata": {
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "alt-svc": "h3=\":443\"; ma=86400",
+              "cache-control": "private, max-age=0, no-store, no-cache, must-revalidate",
+              "cf-cache-status": "DYNAMIC",
+              "cf-ray": "9ff2865d2c864037-BOM",
+              "connection": "keep-alive",
+              "content-encoding": "br",
+              "content-type": "application/json",
+              "date": "Thu, 21 May 2026 09:23:53 GMT",
+              "server": "cloudflare",
+              "set-cookie": "__cf_bm=FuYh4ezWcOTWnIonwfJfkMOZCM0AbCWlK39VIi6JIFw-1779355432.5101697-1.0.1.1-R86sdVkUNoMriMAw9cMibioku62nd0NeHG.ukTefB9b2UZg.shxhBUmm5ybYs0u6pk6uW0z0dL0S8jNzKKeLfnnbCbLLC.yBwa65JmcR7_z_rjgf7CtIrAyXsG1W70IM; HttpOnly; SameSite=None; Secure; Path=/; Domain=groq.com; Expires=Thu, 21 May 2026 09:53:53 GMT",
+              "strict-transport-security": "max-age=15552000",
+              "transfer-encoding": "chunked",
+              "vary": "Origin",
+              "via": "1.1 google",
+              "x-groq-region": "bom",
+              "x-ratelimit-limit-requests": "14400",
+              "x-ratelimit-limit-tokens": "6000",
+              "x-ratelimit-remaining-requests": "14399",
+              "x-ratelimit-remaining-tokens": "4774",
+              "x-ratelimit-reset-requests": "6s",
+              "x-ratelimit-reset-tokens": "12.26s",
+              "x-request-id": "req_01ks4xjdk8f6pv2pqp696a2h57"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "error": "Precision: 0.0%, Recall: 0.0%, F1: 0.0%",
+        "gradingResult": {
+          "pass": false,
+          "score": 0.5,
+          "reason": "Precision: 0.0%, Recall: 0.0%, F1: 0.0%",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 969,
+            "prompt": 829,
+            "completion": 140,
+            "cached": 0,
+            "numRequests": 1
+          },
+          "componentResults": [
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Precision: 0.0%, Recall: 0.0%, F1: 0.0%"
+            },
+            {
+              "assertion": {
+                "type": "factuality",
+                "value": "The response must accurately describe Sugarcane Red Rot without hallucinating unrelated facts."
+              },
+              "pass": true,
+              "score": 1,
+              "reason": "The submitted answer contains all the same details as the expert answer, which implies Sugarcane Red Rot disease without directly stating it. The symptoms and characteristics provided in the submitted answer, such as Red discoloration of internal tissues, sour smell, and drying of leaves, are consistent with Red Rot disease. The JSON analysis provided in the submitted answer also aligns with the expected details for Sugarcane Red Rot, including the cause being fungal infection, transmission related to climate change and weeds, and appropriate care measures. The values in Hindi are based on the analysis and do not contradict the expert's implication of Red Rot disease.",
+              "tokensUsed": {
+                "total": 969,
+                "prompt": 829,
+                "completion": 140,
+                "numRequests": 1
+              }
+            }
+          ]
+        },
+        "id": "0804bc97-7c50-420f-928c-79dfa6ed6654",
+        "latencyMs": 1609,
+        "namedScores": {},
+        "prompt": {
+          "raw": "Act as a Senior Plant Pathologist.\nAnalyze the Sugarcane crop based on these symptoms: Red discoloration of the internal tissues, sour smell, drying of leaves.\n\nReturn JSON where the values are in Hindi, but DO NOT translate the JSON keys. The keys MUST remain exactly as written below in English:\n{\n  \"name\": \"Disease Name\",\n  \"detectedCrop\": \"Visually Identified Crop\",\n  \"cause\": \"Cause\",\n  \"transmission\": \"Spreading method\",\n  \"symptoms\": [\"S1\", \"S2\"],\n  \"immediate_care\": [\"A1\", \"A2\"],\n  \"preventative_care\": [\"P1\", \"P2\"],\n  \"healthy\": 80,\n  \"infected\": 20,\n  \"confidence\": 90\n}\n",
+          "label": "Act as a Senior Plant Pathologist.\nAnalyze the {{selectedCrop}} crop based on these symptoms: {{symptomsDescription}}\n\nReturn JSON where the values are in {{language}}, but DO NOT translate the JSON keys. The keys MUST remain exactly as written below in English:\n{\n  \"name\": \"Disease Name\",\n  \"detectedCrop\": \"Visually Identified Crop\",\n  \"cause\": \"Cause\",\n  \"transmission\": \"Spreading method\",\n  \"symptoms\": [\"S1\", \"S2\"],\n  \"immediate_care\": [\"A1\", \"A2\"],\n  \"preventative_care\": [\"P1\", \"P2\"],\n  \"healthy\": 80,\n  \"infected\": 20,\n  \"confidence\": 90\n}\n",
+          "config": {
+            "provider": "groq:llama-3.3-70b-versatile"
+          }
+        },
+        "promptId": "dbcd92c91d71d6269a285d8ba9abce9545f8594cabcfd5322ca0d427a2ea9d35",
+        "promptIdx": 0,
+        "provider": {
+          "id": "groq:llama-3.1-8b-instant",
+          "label": ""
+        },
+        "response": {
+          "output": "Based on the symptoms you provided, I would analyze the Sugarcane crop as follows:\n\nThe symptoms you mentioned - Red discoloration of the internal tissues, sour smell, drying of leaves - are indicative of a fungal disease that affects Sugarcane. The disease is likely to be \"Red Rot\" (कрасना रोग).\n\nHere's the JSON analysis:\n\n```json\n{\n  \"name\": \"कрасना रोग\",\n  \"detectedCrop\": \"गन्ना\",\n  \"cause\": \"फंगल संक्रमण\",\n  \"transmission\": \"जलवायु परिवर्तन और खरपतवार\",\n  \"symptoms\": [\"S1: आंतरिक ऊतकों में लाल रंग का रंग बदलना \", \"S2: खट्टी गंध और पत्तियों का सूखना\"],\n  \"immediate_care\": [\"A1: संक्रमित क्षेत्र को तुरंत हटाना \", \"A2: संक्रमण के प्रसार को रोकने के लिए एंटिफंगल दवाएं देना\"],\n  \"preventative_care\": [\"P1: उचित जलवायु नियंत्रण और सिंचाई प्रबंधन \", \"P2: खरपतवार नियंत्रण और स्वस्थ संक्रमण नियंत्रण\"],\n  \"healthy\": 80,\n  \"infected\": 20,\n  \"confidence\": 90\n}\n```\n\nNote: The values in Hindi are based on my analysis and may not be universally accepted.",
+          "tokenUsage": {
+            "total": 551,
+            "prompt": 204,
+            "completion": 347,
+            "numRequests": 1
+          },
+          "cached": false,
+          "latencyMs": 1609,
+          "finishReason": "stop",
+          "guardrails": {
+            "flagged": false
+          },
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "alt-svc": "h3=\":443\"; ma=86400",
+                "cache-control": "private, max-age=0, no-store, no-cache, must-revalidate",
+                "cf-cache-status": "DYNAMIC",
+                "cf-ray": "9ff2865d39608e16-BOM",
+                "connection": "keep-alive",
+                "content-encoding": "br",
+                "content-type": "application/json",
+                "date": "Thu, 21 May 2026 09:23:53 GMT",
+                "server": "cloudflare",
+                "set-cookie": "__cf_bm=7f0bEn1p5s6Rn6GxzzPwN8LlP3r6vm9ESRqvIXij7x0-1779355432.5129995-1.0.1.1-_HpgwXAw3sWThNMBlLZ9pTHNKkDtWbwguycPaYnS5fd5FpBQq4pLz7wVmJWq10ms9t8SaLtGWN53cbms5iy1an6NGCoqcZKzifnNERgkrch95Fnn10IP91ElsVHyeZUZ; HttpOnly; SameSite=None; Secure; Path=/; Domain=groq.com; Expires=Thu, 21 May 2026 09:53:53 GMT",
+                "strict-transport-security": "max-age=15552000",
+                "transfer-encoding": "chunked",
+                "vary": "Origin",
+                "via": "1.1 google",
+                "x-groq-region": "bom",
+                "x-ratelimit-limit-requests": "14400",
+                "x-ratelimit-limit-tokens": "6000",
+                "x-ratelimit-remaining-requests": "14398",
+                "x-ratelimit-remaining-tokens": "3546",
+                "x-ratelimit-reset-requests": "12s",
+                "x-ratelimit-reset-tokens": "24.54s",
+                "x-request-id": "req_01ks4xjdkef6qayk2ans8tbg19"
+              }
+            }
+          }
+        },
+        "score": 0.5,
+        "success": false,
+        "testCase": {
+          "description": "Test Factuality & Hallucinations for Hindi Output (Sugarcane Red Rot)",
+          "vars": {
+            "language": "Hindi",
+            "selectedCrop": "Sugarcane",
+            "symptomsDescription": "Red discoloration of the internal tissues, sour smell, drying of leaves.",
+            "eval_accuracy_field": "name",
+            "expected_value": "Red Rot",
+            "eval_target_field": "immediate_care",
+            "expected_items": "uproot and burn, fungicide"
+          },
+          "assert": [
+            {
+              "type": "javascript",
+              "value": "file://metrics.js:evaluateInformationRetrieval"
+            },
+            {
+              "type": "factuality",
+              "value": "The response must accurately describe Sugarcane Red Rot without hallucinating unrelated facts."
+            }
+          ],
+          "options": {
+            "provider": "groq:llama-3.3-70b-versatile"
+          },
+          "metadata": {}
+        },
+        "testIdx": 1,
+        "vars": {
+          "language": "Hindi",
+          "selectedCrop": "Sugarcane",
+          "symptomsDescription": "Red discoloration of the internal tissues, sour smell, drying of leaves.",
+          "eval_accuracy_field": "name",
+          "expected_value": "Red Rot",
+          "eval_target_field": "immediate_care",
+          "expected_items": "uproot and burn, fungicide"
+        },
+        "metadata": {
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "alt-svc": "h3=\":443\"; ma=86400",
+              "cache-control": "private, max-age=0, no-store, no-cache, must-revalidate",
+              "cf-cache-status": "DYNAMIC",
+              "cf-ray": "9ff2865d39608e16-BOM",
+              "connection": "keep-alive",
+              "content-encoding": "br",
+              "content-type": "application/json",
+              "date": "Thu, 21 May 2026 09:23:53 GMT",
+              "server": "cloudflare",
+              "set-cookie": "__cf_bm=7f0bEn1p5s6Rn6GxzzPwN8LlP3r6vm9ESRqvIXij7x0-1779355432.5129995-1.0.1.1-_HpgwXAw3sWThNMBlLZ9pTHNKkDtWbwguycPaYnS5fd5FpBQq4pLz7wVmJWq10ms9t8SaLtGWN53cbms5iy1an6NGCoqcZKzifnNERgkrch95Fnn10IP91ElsVHyeZUZ; HttpOnly; SameSite=None; Secure; Path=/; Domain=groq.com; Expires=Thu, 21 May 2026 09:53:53 GMT",
+              "strict-transport-security": "max-age=15552000",
+              "transfer-encoding": "chunked",
+              "vary": "Origin",
+              "via": "1.1 google",
+              "x-groq-region": "bom",
+              "x-ratelimit-limit-requests": "14400",
+              "x-ratelimit-limit-tokens": "6000",
+              "x-ratelimit-remaining-requests": "14398",
+              "x-ratelimit-remaining-tokens": "3546",
+              "x-ratelimit-reset-requests": "12s",
+              "x-ratelimit-reset-tokens": "24.54s",
+              "x-request-id": "req_01ks4xjdkef6qayk2ans8tbg19"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      }
+    ],
+    "stats": {
+      "successes": 1,
+      "failures": 1,
+      "errors": 0,
+      "tokenUsage": {
+        "prompt": 406,
+        "completion": 607,
+        "cached": 0,
+        "total": 1013,
+        "numRequests": 2,
+        "completionDetails": {
+          "reasoning": 0,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0
+        },
+        "assertions": {
+          "total": 1811,
+          "prompt": 1573,
+          "completion": 238,
+          "cached": 0,
+          "numRequests": 0,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0
+          }
+        }
+      },
+      "durationMs": 5547
+    }
+  },
+  "config": {
+    "tags": {},
+    "description": "Agrisetu Frontend AI Evaluation - Krushi Doctor",
+    "prompts": [
+      "Act as a Senior Plant Pathologist.\nAnalyze the {{selectedCrop}} crop based on these symptoms: {{symptomsDescription}}\n\nReturn JSON where the values are in {{language}}, but DO NOT translate the JSON keys. The keys MUST remain exactly as written below in English:\n{\n  \"name\": \"Disease Name\",\n  \"detectedCrop\": \"Visually Identified Crop\",\n  \"cause\": \"Cause\",\n  \"transmission\": \"Spreading method\",\n  \"symptoms\": [\"S1\", \"S2\"],\n  \"immediate_care\": [\"A1\", \"A2\"],\n  \"preventative_care\": [\"P1\", \"P2\"],\n  \"healthy\": 80,\n  \"infected\": 20,\n  \"confidence\": 90\n}\n"
+    ],
+    "providers": [
+      "groq:llama-3.1-8b-instant"
+    ],
+    "tests": [
+      {
+        "description": "Test Accuracy and F1 Score for Cotton Powdery Mildew",
+        "vars": {
+          "language": "English",
+          "selectedCrop": "Cotton",
+          "symptomsDescription": "White powdery spots on leaves, curled edges, and stunted growth.",
+          "eval_accuracy_field": "name",
+          "expected_value": "Powdery Mildew",
+          "eval_target_field": "symptoms",
+          "expected_items": "white powdery spots, curled edges, stunted growth"
+        },
+        "assert": [
+          {
+            "type": "javascript",
+            "value": "file://metrics.js:evaluateAccuracy"
+          },
+          {
+            "type": "javascript",
+            "value": "file://metrics.js:evaluateInformationRetrieval"
+          },
+          {
+            "type": "factuality",
+            "value": "The response must accurately describe Powdery Mildew and must not hallucinate unscientific preventative cares."
+          }
+        ]
+      },
+      {
+        "description": "Test Factuality & Hallucinations for Hindi Output (Sugarcane Red Rot)",
+        "vars": {
+          "language": "Hindi",
+          "selectedCrop": "Sugarcane",
+          "symptomsDescription": "Red discoloration of the internal tissues, sour smell, drying of leaves.",
+          "eval_accuracy_field": "name",
+          "expected_value": "Red Rot",
+          "eval_target_field": "immediate_care",
+          "expected_items": "uproot and burn, fungicide"
+        },
+        "assert": [
+          {
+            "type": "javascript",
+            "value": "file://metrics.js:evaluateInformationRetrieval"
+          },
+          {
+            "type": "factuality",
+            "value": "The response must accurately describe Sugarcane Red Rot without hallucinating unrelated facts."
+          }
+        ]
+      }
+    ],
+    "scenarios": [],
+    "env": {},
+    "defaultTest": {
+      "options": {
+        "provider": "groq:llama-3.3-70b-versatile"
+      },
+      "vars": {},
+      "assert": [],
+      "metadata": {}
+    },
+    "outputPath": [
+      "evals/results.json"
+    ],
+    "extensions": [],
+    "metadata": {},
+    "evaluateOptions": {}
+  },
+  "shareableUrl": null,
+  "metadata": {
+    "promptfooVersion": "0.120.19",
+    "nodeVersion": "v22.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "exportedAt": "2026-05-21T09:23:58.944Z",
+    "evaluationCreatedAt": "2026-05-21T09:23:53.164Z"
+  }
+}

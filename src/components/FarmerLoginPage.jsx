@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import FarmerLogin from './FarmerLogin';
@@ -17,13 +15,24 @@ function FarmerLoginPage() {
 
       {/* Login Form Container */}
       <div className="flex-1 flex items-center justify-center p-4">
-        {/* Added green border and shadow for visual framing */}
-        <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6 border-2 border-green-300">
-          <h2 className="text-xl font-semibold text-center mb-6">Login to your Account</h2>
+        <div
+          className="w-full max-w-md bg-white rounded-2xl p-6
+            border-2 border-green-200
+            shadow-lg
+            transition-all duration-300 ease-in-out
+            hover:border-green-500 hover:shadow-2xl hover:shadow-green-100 hover:-translate-y-1"
+        >
+          <h2 className="text-xl font-semibold text-center mb-6 text-gray-800">Login to your Account</h2>
           {/* Renders the FarmerLogin form component */}
           <FarmerLogin />
           <p className="text-center text-sm text-gray-600 mt-4">
-            Not registered yet? <button onClick={() => navigate('/farmer-signup')} className="text-blue-500 hover:text-blue-700 underline">sign up here</button>
+            Not registered yet?{' '}
+            <button
+              onClick={() => navigate('/farmer-signup')}
+              className="text-blue-500 hover:text-blue-700 underline underline-offset-2 transition-colors font-medium"
+            >
+              sign up here
+            </button>
           </p>
         </div>
       </div>
